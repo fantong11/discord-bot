@@ -1,16 +1,19 @@
 const fs = require("fs");
 const Discord = require("discord.js");
 const { prefix, token } = require("./config.json");
-const ytdl = require('ytdl-core');
 
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
 
+//////////////////////////////////////////////////////////////////////
+// 拿到commands資料夾裡全部的檔案////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 
 for (const file of commandFiles) {
     const command = require(`./commands/${file}`);
 
+    // 一個指令名字對應一個指令檔案
     client.commands.set(command.name, command);
 }
 
@@ -29,6 +32,9 @@ client.once("disconnect", () => {
 });
 
 client.on("message", async (message) => {
+    //////////////////////////////////////////////////////////////////////
+    // 沒有prefix或是傳訊息的是機器人就回傳////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////
     if (!message.content.startsWith(prefix) || message.author.bot) return;
 
     // 拿掉前面prefix的長度
@@ -38,10 +44,30 @@ client.on("message", async (message) => {
     // 陣列左移再變小寫
     const commandName = args.shift().toLowerCase();
 
-    if (!client.commands.has(commandName)) return;
+    const command = client.commands.get(commandName) 
+        || client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
 
-    const command = client.commands.get(commandName);
+    if (!command) return;
 
+    //////////////////////////////////////////////////////////////////////
+    // guildOnly的指令和私訊沒辦法執行////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////
+    if (command.guildOnly && message.channel.type === 'dm') {
+        return message.reply("I can't execute that command inside DMs!");
+    }
+    //////////////////////////////////////////////////////////////////////
+    // 指令有權限的話去找傳訊息的人有沒有權限////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////
+    if (command.permissions) {
+        const authorPerms = message.channel.permissionsFor(message.author);
+        if (!authorPerms || !authorPerms.has(command.permissions)) {
+            return message.reply("You can not do this!");
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////
+    // 判斷指令需不需要參數//////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////
     if (command.args && !args.length) {
         let reply = (`You didn't provide and arguments, ${message.author}!`);
 
@@ -51,7 +77,9 @@ client.on("message", async (message) => {
 
         return message.channel.send(reply);
     }
-
+    //////////////////////////////////////////////////////////////////////
+    // 訊息冷卻時間/////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////
     const cooldowns = new Discord.Collection();
 
     if (!cooldowns.has(command.name)) {
@@ -67,20 +95,23 @@ client.on("message", async (message) => {
 
         if (now < expirationTime) {
             const timeLeft = (expirationTime - now) / 1000;
-            return message.reply(`please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${command.name}\` command.`)
+            return message.reply(`please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${command.name}\` command.`);
         }
     }
 
     timestamps.set(message.author.id, now);
     setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
 
+    //////////////////////////////////////////////////////////////////////
+    // 執行指令////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////
     try {
         command.execute(message, args);
     }
-    catch(error) {
+    catch (error) {
         console.log(error);
         message.reply("There was an error trying to execute that command!");
-    }    
+    }
 });
 
 client.login(token);
