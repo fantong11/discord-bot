@@ -5,6 +5,7 @@ const { token } = require("./config.json");
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
 client.events = new Discord.Collection();
+client.queue = new Map();
 
 //////////////////////////////////////////////////////////////////////
 // 拿到commands和events裡全部的檔案/////////////////////////////////////////
