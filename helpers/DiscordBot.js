@@ -23,11 +23,12 @@ class DiscordBot {
 
     setCommands(commandFiles) {
         for (const file of commandFiles) {
-            const command = require(`../commands/${file}`);
+            const Command = require(`../commands/${file}`);
 
             // 一個指令名字對應一個指令檔案
-            this.client.commands.set(command.name, command);
+            this.client.commands.set(file.replace(".js", ""), Command);
         }
+
     }
 
     setEvents(eventFiles) {
@@ -44,7 +45,6 @@ class DiscordBot {
     onListen(event) {
         const emitter = (typeof event.emitter === "string" ? this.client[event.emitter] : event.emitter) || this.client;
         const once = event.once;
-        console.log(event);
         try {
             emitter[once ? "once" : "on"](event.name, (...args) => event.execute(...args));
         } catch (error) {

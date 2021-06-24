@@ -1,10 +1,12 @@
 const Discord = require("discord.js");
-const Event = require("../helpers/Event")
+const Event = require("../helpers/Event");
+const CommandManager = require("../helpers/CommandManager");
 const { prefix } = require("../config.js");
 
 class Message extends Event {
     constructor() {
         super("message", false);
+        this.commandManager = new CommandManager();
     }
 
     execute(message) {
@@ -18,10 +20,11 @@ class Message extends Event {
         // 陣列左移再變小寫
         const commandName = args.shift().toLowerCase();
 
-        const command = message.client.commands.get(commandName)
-            || message.client.commands.find(cmd => cmd.aliases && cmd.aliases.includes(commandName));
+        const Command = this.commandIsExist(message.client.commands, commandName);
 
-        if (!command) return;
+        if (!Command) return;
+
+        const command = new Command();
 
         // guildOnly的指令和私訊沒辦法執行
         if (command.guildOnly && message.channel.type === 'dm') {
@@ -36,7 +39,7 @@ class Message extends Event {
         }
 
         // 判斷指令需不需要參數
-        if (command.args && !args.length) {
+        if (command.argsIsRequired && !args.length) {
             let reply = (`You didn't provide and arguments, ${message.author}!`);
 
             if (command.usage) {
@@ -70,13 +73,22 @@ class Message extends Event {
 
         // 執行指令
         try {
-            command.execute(message, args);
+            command.setMessageAndArgs(message, args);
+            this.commandManager.executeCmd(command);
+            // command.execute(message, args);
         }
         catch (error) {
             console.log(error);
             message.reply("There was an error trying to execute that command!");
         }
 
+    }
+
+    commandIsExist(commands, commandName) {
+        const Command = commands.get(commandName)
+            || commands.find(Command => new Command().aliases && new Command().aliases.includes(commandName));
+
+        return Command;
     }
 }
 
