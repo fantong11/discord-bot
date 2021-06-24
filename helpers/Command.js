@@ -1,11 +1,15 @@
 class Command {
-    constructor() {
+    constructor(name, description) {
         this.name = name;
         this.description = description;
-        this.usage = usage;
     }
 
-    execute(message, args) {
+    setMessageAndArgs(message, args) {
+        this.message = message;
+        this.args = args;
+    }
+
+    execute() {
         throw new Error("Method execute() must be implemented.");
     }
 }

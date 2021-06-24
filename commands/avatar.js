@@ -1,16 +1,21 @@
 const Discord = require("discord.js");
+const Command = require("../helpers/Command");
 
-module.exports = {
-    name: "avatar",
-    description: "Show your avatar",
-    aliases: ["icon", "pfp"],
-    execute(message, args) {
+class Avatar extends Command {
+    constructor() {
+        super("avatar", "Show your avatar")
+        this.aliases = ["icon", "pfp"];
+    }
+
+    execute() {
         const embed = new Discord.MessageEmbed()
             .setColor("#0099ff")
             .setTitle("Avatar")
-            .setAuthor(message.author.username, message.author.displayAvatarURL())
-            .setImage(message.author.displayAvatarURL())
+            .setAuthor(this.message.author.username, this.message.author.displayAvatarURL())
+            .setImage(this.message.author.displayAvatarURL())
             .setTimestamp();
-        message.channel.send(embed);
+        this.message.channel.send(embed);
     }
 }
+
+module.exports = Avatar;
