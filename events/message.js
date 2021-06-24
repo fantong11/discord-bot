@@ -1,13 +1,14 @@
 const Discord = require("discord.js");
-const { prefix } = require("../config.json");
+const Event = require("../helpers/Event")
+const { prefix } = require("../config.js");
 
-module.exports = {
-    name: "message",
-    once: false,
+class Message extends Event {
+    constructor() {
+        super("message", false);
+    }
+
     execute(message) {
-        //////////////////////////////////////////////////////////////////////
-        // 沒有prefix或是傳訊息的是機器人就回傳////////////////////////////////////
-        //////////////////////////////////////////////////////////////////////
+        // 沒有prefix或是傳訊息的是機器人就回傳
         if (!message.content.startsWith(prefix) || message.author.bot) return;
 
         // 拿掉前面prefix的長度
@@ -22,15 +23,11 @@ module.exports = {
 
         if (!command) return;
 
-        //////////////////////////////////////////////////////////////////////
-        // guildOnly的指令和私訊沒辦法執行////////////////////////////////////////
-        //////////////////////////////////////////////////////////////////////
+        // guildOnly的指令和私訊沒辦法執行
         if (command.guildOnly && message.channel.type === 'dm') {
             return message.reply("I can't execute that command inside DMs!");
         }
-        //////////////////////////////////////////////////////////////////////
-        // 指令有權限的話去找傳訊息的人有沒有權限////////////////////////////////////
-        //////////////////////////////////////////////////////////////////////
+        // 指令有權限的話去找傳訊息的人有沒有權限
         if (command.permissions) {
             const authorPerms = message.channel.permissionsFor(message.author);
             if (!authorPerms || !authorPerms.has(command.permissions)) {
@@ -38,9 +35,7 @@ module.exports = {
             }
         }
 
-        //////////////////////////////////////////////////////////////////////
-        // 判斷指令需不需要參數//////////////////////////////////////////////////
-        //////////////////////////////////////////////////////////////////////
+        // 判斷指令需不需要參數
         if (command.args && !args.length) {
             let reply = (`You didn't provide and arguments, ${message.author}!`);
 
@@ -50,9 +45,7 @@ module.exports = {
 
             return message.channel.send(reply);
         }
-        //////////////////////////////////////////////////////////////////////
-        // 訊息冷卻時間/////////////////////////////////////////////////////////
-        //////////////////////////////////////////////////////////////////////
+        // 訊息冷卻時間
         const cooldowns = new Discord.Collection();
 
         if (!cooldowns.has(command.name)) {
@@ -75,9 +68,7 @@ module.exports = {
         timestamps.set(message.author.id, now);
         setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
 
-        //////////////////////////////////////////////////////////////////////
-        // 執行指令////////////////////////////////////////////////////////////
-        //////////////////////////////////////////////////////////////////////
+        // 執行指令
         try {
             command.execute(message, args);
         }
@@ -88,3 +79,5 @@ module.exports = {
 
     }
 }
+
+module.exports = Message;
