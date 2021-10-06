@@ -1,6 +1,6 @@
-const Event = require("../helpers/Event")
+const IEvent = require("../helpers/IEvent")
 
-class Disconnect extends Event {
+class Disconnect extends IEvent {
     constructor() {
         super("disconnect", true);
     }

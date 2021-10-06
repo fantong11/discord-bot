@@ -1,6 +1,6 @@
-const Event = require("../helpers/Event")
+const IEvent = require("../helpers/IEvent")
 
-class Reconnecting extends Event {
+class Reconnecting extends IEvent {
     constructor() {
         super("reconnecting", true);
     }

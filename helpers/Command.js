@@ -1,5 +1,9 @@
 class Command {
     constructor(name, description) {
+        if (this.constructor == Command) {
+            throw new Error("Abstract classes can't be instantiated.");
+        }
+
         this.name = name;
         this.description = description;
     }

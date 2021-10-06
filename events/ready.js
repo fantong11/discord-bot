@@ -1,6 +1,6 @@
-const Event = require("../helpers/Event")
+const IEvent = require("../helpers/IEvent")
 
-class Ready extends Event {
+class Ready extends IEvent {
     constructor() {
         super("ready", true);
     }
