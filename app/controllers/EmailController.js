@@ -1,4 +1,4 @@
-const transporter = require("../services/nodemailerService");
+const transporter = require("../services/NodeMailerService");
 const DiscordBot = require("../helpers/DiscordBot");
 const { db } = require("../services/firebaseService");
 const { setDoc, doc } = require("firebase/firestore/lite");
