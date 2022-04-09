@@ -24,7 +24,7 @@ exports.sendMail = (req, res) => {
     const messageBody = req.body["messageBody"];
     const subject = req.body["subject"];
 
-    const htmlBody = `<p>${messageBody}</p><img src="https://fantong-email-tracker.herokuapp.com/api/recipients/${recipient}" style="display: none">`;
+    const htmlBody = `<p>${messageBody}</p><img src="https://fantong-discord-bot.herokuapp.com/api/recipients/${recipient}" style="display: none">`;
 
     const mailOptions = {
         from: sender,
