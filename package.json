@@ -4,16 +4,31 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "start": "node index.js",
+    "precompress": "{{ executes BEFORE the `compress` script }}",
+    "compress": "{{ run command to compress files }}",
+    "postcompress": "{{ executes AFTER `compress` script }}"
   },
   "author": "fantong",
   "license": "ISC",
   "dependencies": {
     "@discordjs/opus": "^0.3.3",
+    "body-parser": "^1.20.0",
+    "cors": "^2.8.5",
     "discord.js": "^12.4.1",
-    "eslint": "^7.18.0",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.3",
     "ffmpeg": "0.0.4",
+    "ffmpeg-static": "^4.2.7",
+    "firebase": "^9.6.10",
     "fluent-ffmpeg": "^2.1.2",
-    "ytdl-core": "^4.0.0"
+    "nodemailer": "^6.7.3",
+    "opusscript": "0.0.8",
+    "ytdl-core": "^4.4.5"
+  },
+  "devDependencies": {
+    "eslint": "^7.29.0",
+    "jest": "^27.0.5"
   }
 }
