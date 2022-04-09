@@ -1,6 +1,6 @@
 const transporter = require("../services/NodeMailerService");
 const DiscordBot = require("../helpers/DiscordBot");
-const { db } = require("../services/firebaseService");
+const { db } = require("../services/FirebaseService");
 const { setDoc, doc } = require("firebase/firestore/lite");
 
 exports.detectEmailOpen = async (req, res) => {
