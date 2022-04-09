@@ -1,6 +1,7 @@
-const transporter = require("../services/nodemailerService");
+const transporter = require("../services/NodeMailerService");
 const DiscordBot = require("../helpers/DiscordBot");
-const { db } = require("../services/firebaseService");
+const { MessageEmbed } = require('discord.js');
+const { db } = require("../services/FirebaseService");
 const { setDoc, doc } = require("firebase/firestore/lite");
 
 exports.detectEmailOpen = async (req, res) => {
@@ -14,7 +15,8 @@ exports.detectEmailOpen = async (req, res) => {
     });
     console.log("success");
     const discordBot = new DiscordBot()
-    discordBot.client.channels.cache.get("544872704289931264").send(`${email} has opened your email.`);
+    const messageEmbed = new MessageEmbed().setTitle(`${recipient} has opened your email.`);
+    discordBot.client.channels.cache.get("770233030802931712").send(messageEmbed);
     res.status(200).send({ message: "200" });
 }
 
@@ -24,7 +26,7 @@ exports.sendMail = (req, res) => {
     const messageBody = req.body["messageBody"];
     const subject = req.body["subject"];
 
-    const htmlBody = `<p>${messageBody}</p><img src="https://fantong-email-tracker.herokuapp.com/api/recipients/${recipient}" style="display: none">`;
+    const htmlBody = `<p>${messageBody}</p><img src="https://fantong-discord-bot.herokuapp.com/api/recipients/${recipient}" style="display: none">`;
 
     const mailOptions = {
         from: sender,

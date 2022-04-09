@@ -3,7 +3,7 @@ const bodyParser = require("body-parser");
 const DiscordBot = require("./app/helpers/DiscordBot");
 var cors = require("cors");
 
-const server = "https://fantong-email-tracker.herokuapp.com/";
+const server = "https://fantong-discord-bot.herokuapp.com/";
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
