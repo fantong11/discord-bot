@@ -1,5 +1,6 @@
 const transporter = require("../services/NodeMailerService");
 const DiscordBot = require("../helpers/DiscordBot");
+const { MessageEmbed } = require('discord.js');
 const { db } = require("../services/FirebaseService");
 const { setDoc, doc } = require("firebase/firestore/lite");
 
@@ -14,7 +15,8 @@ exports.detectEmailOpen = async (req, res) => {
     });
     console.log("success");
     const discordBot = new DiscordBot()
-    discordBot.client.channels.cache.get("544872704289931264").send(`${recipient} has opened your email.`);
+    const messageEmbed = new MessageEmbed().setTitle(`${recipient} has opened your email.`);
+    discordBot.client.channels.cache.get("544872704289931264").send({ embeds: [messageEmbed] });
     res.status(200).send({ message: "200" });
 }
 
