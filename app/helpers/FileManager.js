@@ -6,7 +6,7 @@ class FileManager {
     }
 
     importScriptFromFolder(folderName) {
-        return fs.readdirSync("./" + folderName).filter(file => file.endsWith('.js'));
+        return fs.readdirSync("./app/" + folderName).filter(file => file.endsWith('.js'));
     }
 }
 

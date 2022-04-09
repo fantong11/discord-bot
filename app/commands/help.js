@@ -1,4 +1,4 @@
-const { prefix } = require("../config.js");
+const { prefix } = require("../../config");
 const Command = require("../helpers/Command");
 
 class Help extends Command {

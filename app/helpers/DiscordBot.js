@@ -1,15 +1,20 @@
 const Discord = require("discord.js");
 const FileManager = require("./FileManager");
-const { token } = require("../config.js");
+const { token } = require("../../config");
 
 class DiscordBot {
+    client = new Discord.Client();
+    
     constructor() {
-        this.client = new Discord.Client();
         this.client.commands = new Discord.Collection();
         this.client.events = new Discord.Collection();
         this.client.queue = new Map();
         this.fileManager = new FileManager();
 
+        if (DiscordBot.instance) {
+            return DiscordBot.instance;
+        }
+        DiscordBot.instance = this;
     }
 
     run() {

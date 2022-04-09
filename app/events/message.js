@@ -1,7 +1,7 @@
 const Discord = require("discord.js");
 const IEvent = require("../helpers/IEvent");
 const CommandManager = require("../helpers/CommandManager");
-const { prefix } = require("../config.js");
+const { prefix } = require("../../config.js");
 
 class Message extends IEvent {
     constructor() {
