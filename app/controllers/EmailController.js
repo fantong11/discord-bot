@@ -16,7 +16,7 @@ exports.detectEmailOpen = async (req, res) => {
     console.log("success");
     const discordBot = new DiscordBot()
     const messageEmbed = new MessageEmbed().setTitle(`${recipient} has opened your email.`);
-    discordBot.client.channels.cache.get("544872704289931264").send(messageEmbed);
+    discordBot.client.channels.cache.get("770233030802931712").send(messageEmbed);
     res.status(200).send({ message: "200" });
 }
 
