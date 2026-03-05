@@ -1,10 +1,12 @@
 const IMusic = require("./IMusic");
 
 class Music extends IMusic {
-    constructor(name, time, url) {
+    constructor(name, time, url, thumbnail = null) {
+        super();
         this.name = name;
         this.time = time;
         this.url = url;
+        this.thumbnail = thumbnail;
     }
 
     getName() {
@@ -19,8 +21,12 @@ class Music extends IMusic {
         return this.url;
     }
 
+    getThumbnail() {
+        return this.thumbnail;
+    }
+
     toString() {
-        return this.name + this.time + this.url;
+        return `${this.name} [${this.time}] - ${this.url}`;
     }
 }
 

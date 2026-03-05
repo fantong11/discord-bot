@@ -1,61 +1,69 @@
-const Discord = require("discord.js");
+const { Client, Collection, GatewayIntentBits } = require("discord.js");
 const FileManager = require("./FileManager");
 const { token } = require("../../config");
 
+// Singleton pattern: guarantees one Discord client across the entire app.
 class DiscordBot {
-    client = new Discord.Client();
-    
     constructor() {
-        this.client.commands = new Discord.Collection();
-        this.client.events = new Discord.Collection();
+        if (DiscordBot._instance) {
+            return DiscordBot._instance;
+        }
+
+        this.client = new Client({
+            intents: [
+                GatewayIntentBits.Guilds,
+                GatewayIntentBits.GuildMessages,
+                GatewayIntentBits.GuildVoiceStates,
+                GatewayIntentBits.MessageContent,   // privileged — enable in Discord Dev Portal
+                GatewayIntentBits.DirectMessages,
+                GatewayIntentBits.GuildMessageReactions,
+            ],
+        });
+
+        this.client.commands = new Collection();
+        this.client.events = new Collection();
         this.client.queue = new Map();
         this.fileManager = new FileManager();
 
-        if (DiscordBot.instance) {
-            return DiscordBot.instance;
-        }
-        DiscordBot.instance = this;
+        DiscordBot._instance = this;
     }
 
     run() {
         const commandFiles = this.fileManager.importScriptFromFolder("commands");
         const eventFiles = this.fileManager.importScriptFromFolder("events");
 
-        this.setCommands(commandFiles);
-        this.setEvents(eventFiles);
+        this._loadCommands(commandFiles);
+        this._loadEvents(eventFiles);
         this.client.login(token);
     }
 
-    setCommands(commandFiles) {
+    _loadCommands(commandFiles) {
         for (const file of commandFiles) {
             const Command = require(`../commands/${file}`);
-
-            // 一個指令名字對應一個指令檔案
             this.client.commands.set(file.replace(".js", ""), Command);
         }
-
     }
 
-    setEvents(eventFiles) {
+    _loadEvents(eventFiles) {
         for (const file of eventFiles) {
             const Event = require(`../events/${file}`);
-
             const event = new Event();
+            event.client = this.client;
             this.client.events.set(event.name, event);
-            this.onListen(event);
+            this._registerEvent(event);
         }
-
     }
 
-    onListen(event) {
-        const emitter = (typeof event.emitter === "string" ? this.client[event.emitter] : event.emitter) || this.client;
-        const once = event.once;
+    _registerEvent(event) {
+        const emitter =
+            (typeof event.emitter === "string" ? this.client[event.emitter] : event.emitter)
+            || this.client;
         try {
-            emitter[once ? "once" : "on"](event.name, (...args) => event.execute(...args));
+            emitter[event.once ? "once" : "on"](event.name, (...args) => event.execute(...args));
         } catch (error) {
             console.error(error.stack);
         }
     }
 }
 
-module.exports = DiscordBot
+module.exports = DiscordBot;

@@ -1,12 +1,15 @@
-const IEvent = require("../helpers/IEvent")
+const IEvent = require("../helpers/IEvent");
+const { prefix } = require("../../config");
 
 class Ready extends IEvent {
     constructor() {
-        super("ready", true);
+        super("clientReady", true);
     }
 
-    execute(message) {
-        console.log("Ready!");
+    execute() {
+        const { user, guilds } = this.client;
+        user.setActivity(`${prefix}help | ${guilds.cache.size} server(s)`, { type: "WATCHING" });
+        console.log(`[Ready] Logged in as ${user.tag} — serving ${guilds.cache.size} server(s)`);
     }
 }
 

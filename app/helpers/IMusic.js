@@ -1,12 +1,10 @@
+// ISP: IMusic only defines the contract for a single music track.
+// Collection behaviour (add, getSize) lives in IPlaylist.
 class IMusic {
     constructor() {
-        if (this.constructor == IMusic) {
+        if (this.constructor === IMusic) {
             throw new Error("Abstract classes can't be instantiated.");
         }
-    }
-
-    add(music) {
-        throw new Error("Method add() must be implemented.");
     }
 
     getName() {
@@ -21,8 +19,8 @@ class IMusic {
         throw new Error("Method getUrl() must be implemented.");
     }
 
-    getSize() {
-        throw new Error("Method getSize() must be implemented.");
+    getThumbnail() {
+        throw new Error("Method getThumbnail() must be implemented.");
     }
 
     toString() {

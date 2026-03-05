@@ -1,12 +1,18 @@
+// Command pattern: CommandManager maintains an execution history and
+// supports undo, decoupling the invoker from the concrete commands.
 class CommandManager {
     constructor() {
-        this.commands = [];
-        this.historyCommands = [];
+        this.history = [];
     }
 
     executeCmd(cmd) {
-        this.commands.push(cmd);
         cmd.execute();
+        this.history.push(cmd);
+    }
+
+    undoLast() {
+        const cmd = this.history.pop();
+        if (cmd) cmd.undo();
     }
 }
 

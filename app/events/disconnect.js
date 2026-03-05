@@ -1,12 +1,12 @@
-const IEvent = require("../helpers/IEvent")
+const IEvent = require("../helpers/IEvent");
 
 class Disconnect extends IEvent {
     constructor() {
-        super("disconnect", true);
+        super("shardDisconnect", false); // v12: "disconnect" → v14: "shardDisconnect"
     }
 
-    execute(message) {
-        console.log("Disconnect!");
+    execute(closeEvent, shardId) {
+        console.log(`[Shard ${shardId}] Disconnected (code: ${closeEvent.code})`);
     }
 }
 

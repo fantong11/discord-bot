@@ -1,12 +1,12 @@
-const IEvent = require("../helpers/IEvent")
+const IEvent = require("../helpers/IEvent");
 
 class Reconnecting extends IEvent {
     constructor() {
-        super("reconnecting", true);
+        super("shardReconnecting", false); // v12: "reconnecting" → v14: "shardReconnecting"
     }
 
-    execute(message) {
-        console.log("Reconnecting!");
+    execute(shardId) {
+        console.log(`[Shard ${shardId}] Reconnecting…`);
     }
 }
 
