@@ -6,7 +6,8 @@
       "Bash(npm install:*)",
       "Bash(timeout 12 node:*)",
       "Bash(timeout 15 node:*)",
-      "Bash(timeout 10 node:*)"
+      "Bash(timeout 10 node:*)",
+      "Bash(mkdir:*)"
     ]
   }
 }
